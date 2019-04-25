@@ -2,8 +2,14 @@ require('dotenv').config();
 const massive = require('massive');
 const express = require('express');
 const session = require('express-session');
+const authController = require('./controllers/authController');
 
 const app = express();
+app.use((req, res, next) => {
+    console.log('request');
+    next();
+})
+app.use(express.json());
 
 massive(process.env.CONNECTION_STRING)
 .then(db => {
@@ -24,4 +30,8 @@ app.use(session({
 }))
 
 
-app.listen(5050, () => console.log('Listening on Port 5050'))
+app.post('/api/register', authController.registerUser)
+app.post('/api/login', authController.loginUser)
+
+
+app.listen(3005, () => console.log('Listening on Port 3005'))
